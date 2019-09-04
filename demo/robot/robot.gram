@@ -1,0 +1,36 @@
+#JSGF V1.0;
+
+/**
+ * JSGF Grammar similar to kws example
+ */
+
+grammar voice_cmd;
+
+public <move> = <cmd> <direction>;
+
+public <help> = [PlEASE] help [ME];
+
+public <wakeup> = hello <name>;
+
+public <speed1> = <speed_ctl> SPEED;
+
+public <speed2> =  SPEED <speed_direction>;
+
+public <bringme> = BRING [ME] <objects>;
+
+public <goto> = GO TO [THE] <place>;
+
+
+<name> = KOBUKI | PEOPLEBOT;
+
+<cmd> = GO | MOVE | TURN | ROTATE;
+
+<direction> = FORWARD | BACK | LEFT | RIGHT;
+
+<speed_ctl> = FULL  | HALF ;
+
+<speed_direction> = UP | DOWN;
+
+<objects> = APPLE | BOOK;
+
+<place> = ROOM;

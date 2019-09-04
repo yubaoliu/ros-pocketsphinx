@@ -43,6 +43,7 @@ class recognizer(object):
         self._device_name_param = "~mic_name"  # Find the name of your microphone by typing pacmd list-sources in the terminal
         self._lm_param = "~lm"
         self._dic_param = "~dict"
+        self._hmm_param = "~hmm" 
 
         # Configure mics with gstreamer launch config
         if rospy.has_param(self._device_name_param):
@@ -81,7 +82,6 @@ class recognizer(object):
         self.asr = self.pipeline.get_by_name('asr')
         self.asr.connect('partial_result', self.asr_partial_result)
         self.asr.connect('result', self.asr_result)
-        self.asr.set_property('configured', True)
         self.asr.set_property('dsratio', 1)
 
         # Configure language model
@@ -97,6 +97,14 @@ class recognizer(object):
             rospy.logerr('Recognizer not started. Please specify a dictionary.')
             return
 
+        # hmm
+        if rospy.has_param(self._hmm_param):
+            hmm = rospy.get_param(self._hmm_param)
+        else:
+            rospy.logerr('Recognizer not started. Please specify a hmm.')
+            return
+
+        self.asr.set_property('lm', lm)
         self.asr.set_property('lm', lm)
         self.asr.set_property('dict', dic)
 

@@ -22,8 +22,8 @@ class ASRControl(object):
         # Initializing publisher with buffer size of 10 messages
         self.pub_ = rospy.Publisher("mobile_base/commands/velocity", Twist, queue_size=10)
 
-        # Subscribe to kws output
-        rospy.Subscriber("kws_data", String, self.parse_asr_result)
+        # Subscribe to kws output, kws_data
+        rospy.Subscriber("grammar_data", String, self.parse_asr_result)
         rospy.spin()
 
     def parse_asr_result(self, detected_words): #pylint: disable=too-many-branches

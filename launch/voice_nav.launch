@@ -1,0 +1,85 @@
+<launch>
+    
+    <!--
+    Args with no default attribute are not optional
+    -->
+    <arg name="input" default=":default"/>
+    <arg name="hmm" default=":default" />
+    <arg name="dict" default="$(find pocketsphinx)/demo/robot/robot.dic" />
+    <arg name="kws" default=":default"/>
+    <arg name="lm" default="$(find pocketsphinx)/demo/robot/robot.lm"/>
+    <arg name="gram" default="$(find pocketsphinx)/demo/robot/robot.gram"/>
+    <arg name="grammar" default="voice_cmd"/>
+    <arg name="rule" default=":default"/>
+    <arg name="keyphrase" default=":default"/>
+    <arg name="threshold" default=":default"/>
+    <arg name="max_speed" default="0.4" />
+    <arg name="start_speed" default="0.2" />
+    <arg name="max_angular_speed" default="0.5" />
+    <arg name="linear_increment" default="0.05" />
+    <arg name="angular_increment" default="0.4" />
+     <arg name="rate" default="5" />
+
+	<!--
+    Node for handling jsgf grammar mode
+    -->
+    <node
+        name="asr_control"
+        pkg="pocketsphinx"
+        type="asr_test.py"
+        output="screen"
+        >
+        <remap from="jsgf_audio" to="sphinx_audio" />
+        <param name="lm" value="$(arg lm)"/>
+        <param name="dict" value="$(arg dict)"/>
+        <param name="hmm" value="$(arg hmm)"/>
+        <param name="gram" value="$(arg gram)"/>
+        <param name="grammar" value="$(arg grammar)"/>
+        <param name="rule" value="$(arg rule)"/>
+    </node>
+
+    <!--
+    Node for publishing audio inputs
+    -->
+    <node
+        name="audio_control"
+        pkg="pocketsphinx"
+        type="send_audio.py"
+        output="screen"
+        >
+        <param name="input" value="$(arg input)"/>
+    </node>
+
+    <!--
+    Node for handling kws mode
+    -->
+    <!-- <node
+        name="kws_control"
+        pkg="pocketsphinx"
+        type="kws_test.py"
+        output="screen"
+        >
+        <param name="hmm" value="$(arg hmm)"/>
+        <param name="dict" value="$(arg dict)"/>
+        <param name="kws" value="$(arg kws)"/>
+        <param name="keyphrase" value="$(arg keyphrase)"/>
+        <param name="threshold" value="$(arg threshold)"/>
+    </node> -->
+
+    <!--Control Robot-->
+    <node
+        name="voice_nav"
+        pkg="pocketsphinx"
+        type="voice_nav.py"
+        output="screen"
+    >
+        <param name="max_speed" value="$(arg max_speed)"/>
+        <param name="max_angular_speed" value="$(arg max_angular_speed)"/>
+        <param name="linear_increment" value="$(arg linear_increment)"/>
+        <param name="angular_increment" value="$(arg angular_increment)"/>
+        <param name="start_speed" value="$(arg start_speed)"/>
+        <param name="rate" value="$(arg rate)"/>
+        <remap from="cmd_vel" to="mobile_base/commands/velocity" />
+    </node> 
+
+</launch>
