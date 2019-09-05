@@ -79,7 +79,7 @@
         <param name="angular_increment" value="$(arg angular_increment)"/>
         <param name="start_speed" value="$(arg start_speed)"/>
         <param name="rate" value="$(arg rate)"/>
-        <remap from="cmd_vel" to="mobile_base/commands/velocity" />
+        <remap from="~cmd_vel" to="mobile_base/commands/velocity" />
     </node> 
 
 </launch>

@@ -4,10 +4,11 @@ import rospy
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 from math import copysign
+from sound_play.libsoundplay import SoundClient
 
 class VoiceNav(object):
     """Class to handle turtlebot simulation control using voice"""
-    def __init__(self):
+    def __init__(self): 
 
         self.max_speed = rospy.get_param("max_speed", 0.4)
         self.max_angular_speed = rospy.get_param("max_angular_speed", 1.5)
@@ -29,14 +30,29 @@ class VoiceNav(object):
         self.rate = rospy.get_param("rate", 5)
         r = rospy.Rate(self.rate)
 
+        # Init Soud playback
+                  
+        # Set the default TTS voice to use  
+        self.voice = rospy.get_param("~voice", "voice_don_diphone")  
+          
+        # Set the wave file path if used  
+        # self.wavepath = rospy.get_param("~wavepath", script_path + "/../sounds")  
+          
+        self.soundhandle =SoundClient()
+        # Wait a moment to let the client connect to the  
+        # sound_play server  
+        rospy.sleep(1)
+        # Make sure any lingering sound_play processes are stopped.  
+        self.soundhandle.stopAll() 
+
         # Initializing publisher with buffer size of 10 messages
-        self.cmd_vel_pub = rospy.Publisher("cmd_vel", Twist, queue_size=10) #mobile_base/commands/velocity
+        self.cmd_vel_pub = rospy.Publisher("~cmd_vel", Twist, queue_size=10) #mobile_base/commands/velocity
 
         # Subscribe to kws output, /kws_data
         rospy.Subscriber("grammar_data", String, self.parse_asr_result)
 
         # A mapping from keywords or phrases to commands
-        self.keywords_to_command = {'stop': ['stop', 'shut down', 'turn off', 'help me'],
+        self.keywords_to_command = {'stop': ['stop', 'stop stop', 'shut down', 'turn off', 'help me'],
                                     'slower': ['slow down'],
                                     'faster': ['speed up'],
                                     'forward': ['go forward', 'go ahead', 'go straight', 'move forward', 'forward'],
@@ -52,6 +68,13 @@ class VoiceNav(object):
                                     'continue': ['continue speech']}
         rospy.loginfo("Ready to receive voice commands")
 
+        # Announce that we are ready for input  
+        # self.soundhandle.playWave(self.wavepath + "/R2D2a.wav")  
+        rospy.sleep(1)  
+        self.soundhandle.say("Ready", self.voice)  
+        rospy.loginfo("Say one of the navigation commands...")  
+  
+                    
         while not rospy.is_shutdown():
             self.cmd_vel_pub.publish(self.cmd_vel)
             r.sleep()
@@ -73,6 +96,9 @@ class VoiceNav(object):
         # Get the motion command from the recognized phrase
         command = self.get_command(msg.data.lower())
         
+        if command != None:
+            self.soundhandle.say(str(command), self.voice)  
+
         # Log the command to the screen
         rospy.loginfo("Command: " + str(command))
         
