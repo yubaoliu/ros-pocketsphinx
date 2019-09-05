@@ -1,0 +1,29 @@
+
+* Overview
+#+begin_export html
+<iframe width="640" height="480"  src="//player.bilibili.com/player.html?aid=66578892&cid=115537946&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+#+end_export
+
+* Build and  Run
+Get Sourece code:
+#+begin_example
+git clone https://github.com/yubaoliu/ros-pocketsphinx.git
+#+end_example
+
+RUN:
+
+#+begin_example
+rosrun sound_play soundplay_node.py
+
+roslaunch pocketsphinx voice_nav.launch
+#+end_example
+
+TURTLEBOT SIMULATOR:
+#+begin_example
+roslaunch turtlebot_gazebo turtlebot_world.launch
+#+end_example
+
+
+* Train Voice Module
+[[http://www.speech.cs.cmu.edu/tools/lmtool-new.html][Sphinx Knowledge Base Tool]]
+
